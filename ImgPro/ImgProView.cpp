@@ -13,8 +13,20 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+// E5 指数变换
+// E6 模糊处理
+// E7 中值处理
+// E8 边缘提取
+// E9 几何变换
+#define E5 0
+#define E6 0
+#define E7 0
+#define E8 0
+#define E9 1
+
+#define PI 3.1415926
 #define ZOOMRATIO 1.2
-#define ROTATEANGLE 30
+#define ROTATEANGLE PI / 3
 /////////////////////////////////////////////////////////////////////////////
 // CImgProView
 
@@ -90,7 +102,7 @@ void CImgProView::OnDraw(CDC* pDC)
 		}
 	}
 
-	/*
+#if E5
 	/////////////////////////////////E5 Show Image///////////////////////////////////
 	for (i = 0; i < height; i++)
 	{
@@ -111,9 +123,9 @@ void CImgProView::OnDraw(CDC* pDC)
 		}
 	}
 	pDC->TextOutA(2*width + 60, 10, "3.0");
-	*/
+#endif
 
-	/*
+#if E6
 	/////////////////////////////////E6 Show Image///////////////////////////////////
 	for (i = 0; i < height; i++)
 	{
@@ -134,9 +146,9 @@ void CImgProView::OnDraw(CDC* pDC)
 		}
 	}
 	pDC->TextOutA(2*width + 60, 10, "GuassSmooth");
-	*/
+#endif
 
-	/*
+#if E7
 	/////////////////////////////////E7 Show Image///////////////////////////////////
 	for (i = 0; i < height; i++)
 	{
@@ -146,9 +158,9 @@ void CImgProView::OnDraw(CDC* pDC)
 			pDC->SetPixel(width + 10 + j, i, RGB(gray, gray, gray));
 		}
 	}
-	*/
+#endif
 
-	/*
+#if E8
 	/////////////////////////////////E8 Show Image///////////////////////////////////
 	for (i = 0; i < height; i++)
 	{
@@ -158,8 +170,9 @@ void CImgProView::OnDraw(CDC* pDC)
 			pDC->SetPixel(width + 10 + j, i, RGB(gray, gray, gray));
 		}
 	}
-	*/
+#endif
 
+#if E9
 	/////////////////////////////////E9 Show Image///////////////////////////////////
 	int newHeight = height * ZOOMRATIO;
 	int newWidth = width * ZOOMRATIO;
@@ -181,7 +194,7 @@ void CImgProView::OnDraw(CDC* pDC)
 			pDC->SetPixel(width + newWidth + 20 + j, i, RGB(gray, gray, gray));
 		}
 	}
-
+#endif
 
 	//////   show outImg here //////////////////////
 
@@ -323,38 +336,39 @@ void CImgProView::readImg( int findex)
 
 ////////  add processing function here  ///////////////////
 
-	/*
+#if E5
 	//////////////////////////////E5///////////////////////////////
 	outImg[0] = new BYTE[width*height];
 	grayTrans(image, width, height, 2, 250, 0, outImg[0]);
 
 	outImg[1] = new BYTE[width * height];
 	grayTrans(image, width, height, 3, 250, 0, outImg[1]);
-	*/
+#endif
 
-	/*
+#if E6
 	//////////////////////////////E6///////////////////////////////
 	outImg[0] = new BYTE[width * height];
 	smooth(image, width, height, outImg[0]);
 
 	outImg[1] = new BYTE[width * height];
 	gaussSmooth(image, width, height, outImg[1]);
-	*/
+#endif
 
-	/*
+#if E7
 	//////////////////////////////E7///////////////////////////////
 	outImg[0] = new BYTE[width * height];
 	middleSmooth(image, width, height, outImg[0]);
-	*/
+#endif
 
-	/*
+#if E8
 	//////////////////////////////E8///////////////////////////////
 	outImg[0] = new BYTE[width * height];
 	outImg[1] = new BYTE[width * height];
 	smooth(image, width, height, outImg[1]);
 	sobel(outImg[1], width, height, 200, 80, outImg[0]);
-	*/
+#endif
 
+#if E9
 	//////////////////////////////E9///////////////////////////////
 	outImg[0] = new BYTE[int(width * ZOOMRATIO) * int(height * ZOOMRATIO)];
 	imageZoomIn(image, width, height, int(width * ZOOMRATIO), int(height * ZOOMRATIO), outImg[0]);
@@ -362,6 +376,7 @@ void CImgProView::readImg( int findex)
 	rotateImgSize(width, height, newWidth, newHeight, ROTATEANGLE);
 	outImg[1] = new BYTE[newWidth * newHeight];
 	imageRotate(image, width, height, newWidth, newHeight, ROTATEANGLE, outImg[1]);
+#endif
 		
 ////////////////////////////////////////////////////////////
 	
